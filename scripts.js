@@ -2,36 +2,36 @@ function calculate() {
 	const ipForm = document.getElementById("ipInput").value;
     const maskForm = document.getElementById("maskSelect").value;
     const ipWithPrefix = `${ipForm}/${maskForm}`;
-     const [ip, prefix] = ipWithPrefix.split('/');
-     if (!ip || !prefix || isNaN(prefix) || prefix < 16 || prefix > 32) {
-         alert('Введите корректный IP-адрес и префикс.');
-         return;
-     }
+    const [ip, prefix] = ipWithPrefix.split('/');
+    if (!ip || !prefix || isNaN(prefix) || prefix < 16 || prefix > 32) {
+        alert('Введите корректный IP-адрес и префикс.');
+        return;
+    }
 
-     const prefixInt = parseInt(prefix, 10);
-     const ipParts = ip.split('.').map(part => parseInt(part, 10));
-     if (ipParts.length !== 4 || ipParts.some(part => part < 0 || part > 255)) {
-         alert('Введите корректный IP-адрес.');
-         return;
-     }
+    const prefixInt = parseInt(prefix, 10);
+    const ipParts = ip.split('.').map(part => parseInt(part, 10));
+    if (ipParts.length !== 4 || ipParts.some(part => part < 0 || part > 255)) {
+        alert('Введите корректный IP-адрес.');
+        return;
+    }
 
-     const mask = (0xFFFFFFFF << (32 - prefixInt)) >>> 0;
-     const inverseMask = ~mask >>> 0;
-     const networkAddress = (ipToInt(ipParts) & mask) >>> 0;
-     const broadcastAddress = (networkAddress | inverseMask) >>> 0;
-     const hostCount = Math.pow(2, 32 - prefixInt);
+    const mask = (0xFFFFFFFF << (32 - prefixInt)) >>> 0;
+    const inverseMask = ~mask >>> 0;
+    const networkAddress = (ipToInt(ipParts) & mask) >>> 0;
+    const broadcastAddress = (networkAddress | inverseMask) >>> 0;
+    const hostCount = Math.pow(2, 32 - prefixInt);
 
-     document.getElementById('initialData').innerHTML = `
-         <tr><th>Name</th><th>Dec</th><th>Bin</th></tr>
-         <tr><td>IP Address</td><td>${ip}</td><td>${ipParts.map(part => part.toString(2).padStart(8, '0')).join('.')}</td></tr>
-         <tr><td>Netmask</td><td>${intToIp(mask)}</td><td>${mask.toString(2).padStart(32, '0').match(/.{8}/g).join('.')}</td></tr>
-         <tr><td>Wildcard</td><td>${intToIp(inverseMask)}</td><td>${inverseMask.toString(2).padStart(32, '0').match(/.{8}/g).join('.')}</td></tr>
-         <tr><td>Network</td><td>${intToIp(networkAddress)}</td><td>${networkAddress.toString(2).padStart(32, '0').match(/.{8}/g).join('.')}</td></tr>
-         <tr><td>Broadcast</td><td>${intToIp(broadcastAddress)}</td><td>${broadcastAddress.toString(2).padStart(32, '0').match(/.{8}/g).join('.')}</td></tr>
-         <tr><td>Hosts</td><td>${hostCount}</td><td></td></tr>
-     `;
+    document.getElementById('initialData').innerHTML = `
+        <tr><th>Name</th><th>Dec</th><th>Bin</th></tr>
+        <tr><td>IP Address</td><td>${ip}</td><td>${ipParts.map(part => part.toString(2).padStart(8, '0')).join('.')}</td></tr>
+        <tr><td>Netmask</td><td>${intToIp(mask)}</td><td>${mask.toString(2).padStart(32, '0').match(/.{8}/g).join('.')}</td></tr>
+        <tr><td>Wildcard</td><td>${intToIp(inverseMask)}</td><td>${inverseMask.toString(2).padStart(32, '0').match(/.{8}/g).join('.')}</td></tr>
+        <tr><td>Network</td><td>${intToIp(networkAddress)}</td><td>${networkAddress.toString(2).padStart(32, '0').match(/.{8}/g).join('.')}</td></tr>
+        <tr><td>Broadcast</td><td>${intToIp(broadcastAddress)}</td><td>${broadcastAddress.toString(2).padStart(32, '0').match(/.{8}/g).join('.')}</td></tr>
+        <tr><td>Hosts</td><td>${hostCount}</td><td></td></tr>
+    `;
 	
-     generateCIDRMap(networkAddress, prefixInt, ip);
+    generateCIDRMap(networkAddress, prefixInt, ip);
  }
 
  function generateCIDRMap(networkAddress, prefixInt, ipAddr) {
@@ -70,16 +70,16 @@ function calculate() {
 			if (prefix === 0 && !addedZeroPrefix) {
 				// Для подсети /0 всегда используем 0.0.0.0
 				const subnetIp = '0.0.0.0';
-				rowHtml += `<td class="PREF${prefix} td-hidden last-visible" rowspan="${rowspan}" title="4294967296"><span class="hidden">${subnetIp}</span></td>`;
+			rowHtml += `<td class="PREF${prefix} td-hidden last-visible" rowspan="${rowspan}" title="4 294 967 296"><span class="hidden">${subnetIp}</span></td>`;
 				addedZeroPrefix = true;	
 			} else {
 				if (row % hosts === 0) {
 					const subnetIp = intToIp((ipInt & (0xFFFFFFFF << (32 - prefix))) >>> 0);
 					if (Math.abs(prefix - prefixInt) <= 1) {
-						rowHtml += `<td class="PREF${prefix}${isLastInColumn ? ' last-visible' : ''}" rowspan="${rowspan}" title="${hosts}"><span>${subnetIp}</span></td>`;
+						rowHtml += `<td class="PREF${prefix}${isLastInColumn ? ' last-visible' : ''}" rowspan="${rowspan}" title="${hosts.toLocaleString('ru-RU')}"><span>${subnetIp}</span></td>`;
 					}
 					else {
-						rowHtml += `<td class="PREF${prefix} td-hidden ${isLastInColumn ? ' last-visible' : ''}" rowspan="${rowspan}" title="${hosts}"><span class="hidden">${subnetIp}</span></td>`;
+						rowHtml += `<td class="PREF${prefix} td-hidden ${isLastInColumn ? ' last-visible' : ''}" rowspan="${rowspan}" title="${hosts.toLocaleString('ru-RU')}"><span class="hidden">${subnetIp}</span></td>`;
 					}
 				}
 			}
