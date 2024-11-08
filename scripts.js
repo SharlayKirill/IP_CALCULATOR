@@ -70,16 +70,16 @@ function calculate() {
 			if (prefix === 0 && !addedZeroPrefix) {
 				// Для подсети /0 всегда используем 0.0.0.0
 				const subnetIp = '0.0.0.0';
-				rowHtml += `<td class="PREF${prefix} td-hidden last-visible" rowspan="${rowspan}"><span class="hidden">${subnetIp}</span></td>`;
+				rowHtml += `<td class="PREF${prefix} td-hidden last-visible" rowspan="${rowspan}" title="4294967296"><span class="hidden">${subnetIp}</span></td>`;
 				addedZeroPrefix = true;	
 			} else {
 				if (row % hosts === 0) {
 					const subnetIp = intToIp((ipInt & (0xFFFFFFFF << (32 - prefix))) >>> 0);
 					if (Math.abs(prefix - prefixInt) <= 1) {
-						rowHtml += `<td class="PREF${prefix}${isLastInColumn ? ' last-visible' : ''}" rowspan="${rowspan}"><span>${subnetIp}</span></td>`;
+						rowHtml += `<td class="PREF${prefix}${isLastInColumn ? ' last-visible' : ''}" rowspan="${rowspan}" title="${hosts}"><span>${subnetIp}</span></td>`;
 					}
 					else {
-						rowHtml += `<td class="PREF${prefix} td-hidden ${isLastInColumn ? ' last-visible' : ''}" rowspan="${rowspan}"><span class="hidden">${subnetIp}</span></td>`;
+						rowHtml += `<td class="PREF${prefix} td-hidden ${isLastInColumn ? ' last-visible' : ''}" rowspan="${rowspan}" title="${hosts}"><span class="hidden">${subnetIp}</span></td>`;
 					}
 				}
 			}
